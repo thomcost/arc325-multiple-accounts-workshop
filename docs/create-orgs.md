@@ -1,6 +1,5 @@
 In this module you will create an AWS Organization, 3 Organizational Units under them for specific logical grouping. Create specific AWS accounts for Security, Shared Services, and  Application One accounts and map them under appropriate OU’s.
 
-> *   Use **North Virginia (us-east-1)** region in billing account.
 
 **Table of Contents:**
 -   [Create Organization and Organizational Units in the billing account](#create-organization-and-organizational-units-in-the-billing-account)
