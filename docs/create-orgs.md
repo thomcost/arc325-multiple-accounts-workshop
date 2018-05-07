@@ -64,6 +64,11 @@ r-abcd
 
 > Save the value of GD-USA OU Id (e.g. ou-abcd-7example) returned by the above command or from the UI in ResourcesList.txt file.
 
+> Create Organizational Unit via API
+
+https://docs.aws.amazon.com/organizations/latest/APIReference/API_CreateOrganizationalUnit.html
+
+
 #### Create CTO OU
 *   Create CTO Organizational Unit (OU) and name it `CTO` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
 
