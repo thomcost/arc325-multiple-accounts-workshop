@@ -131,7 +131,8 @@ aws organizations create-organizational-unit --region us-east-1 --name KPIDashbo
 
     *   Full Name – Enter a name (e.g. Security Account)
     *   Email Address – Valid unique email address (e.g. noreply+lzsec@example.com)
-    *   IAM role name – Admin IAM role which the appropriate user in Billing account can assume. Name it **PayerAccountAccessRole** for all the accounts you are creating under the Master account.
+    *   IAM role name – Admin IAM role which the appropriate user in the account can assume. Name it **IAM-god** for all the accounts you are creating under the Master account.
+    *  <TAG or ?? > Every account that get’s created needs DL+SNS - escalation point for Billing, Alerts, critical escalation 
 
 **Using CLI:**
 
