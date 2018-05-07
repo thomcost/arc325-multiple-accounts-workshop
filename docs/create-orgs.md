@@ -1,57 +1,38 @@
-In this module you will create an AWS Organization, 3 Organizational Units under them for specific logical grouping. Create specific AWS accounts for Security, Shared Services, and  Application One accounts and map them under appropriate OU’s.
+Goals:  
+
+1. Create Organizational Units GD-USA, CTO & KPIDashboard under master account.
+
+2. Create the 6 specifit specific AWS accounts for KPIDashboard and map them under appropriate OU’s.
 
 
 **Table of Contents:**
--   [Create Organization and Organizational Units in the billing account](#create-organization-and-organizational-units-in-the-billing-account)
-    -   [Create Organization](#create-organization)
+-   [Create Organizational Units in the master account](#create-organizational-units-in-the-master-account)
+    -   [Get Organization](#get-organization)
     -   [Create Organizational Units (OUs)](#create-organizational-units-ous)
-        -   [Create Security OU](#create-security-ou)
-        -   [Create Shared Services OU](#create-shared-services-ou)
-        -   [Create Applications OU](#create-applications-ou)
--   [Create required AWS accounts](#create-required-aws-accounts)
--   [Move accounts under corresponding Organizational Units](#move-accounts-under-corresponding-organizational-units)
-    -   [Move 'Security Account' to 'Security OU'.](#move-security-account-to-security-ou)
-    -   [Move 'Shared Services Account' to 'Shared Services OU'.](#move-shared-services-account-to-shared-services-ou)
-    -   [Move 'Application One Account' to 'Applications OU'.](#move-application-one-account-to-applications-ou)
+        -   [Create GD-USA OU](#create-security-ou)
+        -   [Create CTO OU](#create-shared-services-ou)
+        -   [Create KPIDashboard OU](#create-applications-ou)
+-   [Create 6 required AWS accounts](#create-required-aws-accounts)
+-   [Move 6 accounts under CTO Organizational Units](#move-accounts-under-corresponding-organizational-units)
+    -   [Move 'KPIDashboard-Dev-Private' to 'KPIDashboard OU'.](#move-security-account-to-KPIDashboard-ou)
+    -   [Move 'KPIDashboard-Dev' to 'KPIDashboard OU'.](#move-shared-services-account-to-shared-services-ou)
+    
+    Nice to have - need to define
+    
 -   [Configure CLI for Cross Account access through Assume Role (only if you are using CLI)](#configure-cli-for-cross-account-access-through-assume-role-only-if-you-are-using-cli)
 -   [Expected Outcome](expected-outcome)
 
 
-## Create Organization and Organizational Units in the billing account
+## CreateOrganizational Units in the master account
 
 Login to your [AWS Management Console](https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1) and navigate to [AWS Organizations](https://console.aws.amazon.com/organizations/home) console.
 
-### Create Organization
+Create IAM-god role in Master Account
 
-Create an Organization. This account will be your Billing account and you will create additional account under this account.
-
-**Using CLI:**
-```
-aws organizations create-organization --feature-set ALL --region us-east-1 --profile billing
-```
-```json
-{
-    "Organization": {
-        "AvailablePolicyTypes": [
-            {
-                "Status": "ENABLED",
-                "Type": "SERVICE_CONTROL_POLICY"
-            }
-        ],
-        "MasterAccountId": "123456789012",
-        "MasterAccountArn": "arn:aws:organizations::123456789012:account/o-got31bf9ah/123456789012",
-        "FeatureSet": "ALL",
-        "MasterAccountEmail": "noreply+lzbilling@example.com",
-        "Id": "o-got31bf9ah",
-        "Arn": "arn:aws:organizations::123456789012:organization/o-got31bf9ah"
-    }
-}
-```
-
-Get the ID of the organization and save it in `ResourcesList.txt`
+Get the ID of the master organization and save it in `ResourcesList.txt`
 
 <code>
-aws organizations list-roots --region us-east-1 --profile billing --query 'Roots[0].Id'
+aws organizations list-roots --region us-east-1 --query 'Roots[0].Id'
 </code>
 
 ```
@@ -60,14 +41,14 @@ r-abcd
 
 ### Create Organizational Units (OUs)
 
-#### Create Security OU
-*   Create Security Organizational Units (OU) and name it `Security` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
+#### Create GD-USA OU
+*   Create GD-USA Organizational Units (OU) and name it `GD-USA` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
 
 **Using CLI:**
 
 *   Use the correct organization ID for parameter `--parent-id` in the below command, create organizational unit.
 
-<code>aws organizations create-organizational-unit --region us-east-1 --profile billing --name Security --parent-id <b><i>r-abcd</i></b>
+<code>aws organizations create-organizational-unit --region us-east-1 --name GD-USA --parent-id <b><i>r-abcd</i></b>
 </code>
 
 
@@ -76,22 +57,22 @@ r-abcd
     "OrganizationalUnit": {
         "Id": "ou-abcd-7example",
         "Arn": "arn:aws:organizations::123456789012:ou/o-got31bf9ah/ou-abcd-7example",
-        "Name": "Security"
+        "Name": "GD-USA"
     }
 }
 ```
 
-> Save the value of Security OU Id (e.g. ou-abcd-7example) returned by the above command or from the UI in ResourcesList.txt file.
+> Save the value of GD-USA OU Id (e.g. ou-abcd-7example) returned by the above command or from the UI in ResourcesList.txt file.
 
-#### Create Shared Services OU
-*   Create Shared Services Organizational Unit (OU) and name it `Shared Services` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
+#### Create CTO OU
+*   Create CTO Organizational Unit (OU) and name it `CTO` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
 
 **Using CLI:**
 
 *   Use the correct organization ID for parameter `--parent-id` in the below command, create organizational unit.
 
 <code>
-aws organizations create-organizational-unit --region us-east-1 --profile billing --name "Shared Services" --parent-id <b><i>r-abcd</i></b>
+aws organizations create-organizational-unit --region us-east-1 --name "CTO" --parent-id <b><i>r-abcd</i></b>
 </code><br>
 
 
@@ -100,7 +81,7 @@ aws organizations create-organizational-unit --region us-east-1 --profile billin
     "OrganizationalUnit": {
         "Id": "ou-abcd-7example",
         "Arn": "arn:aws:organizations::123456789012:ou/o-got31bf9ah/ou-abcd-7example",
-        "Name": "Shared Services"
+        "Name": "CTO"
     }
 }
 ```
@@ -108,15 +89,15 @@ aws organizations create-organizational-unit --region us-east-1 --profile billin
 > Save the value of Shared Services OU Id (e.g. ou-abcd-7example) returned by the above command or from the UI in ResourcesList.txt file.
 
 
-#### Create Applications OU
-*   Create Applications Organizational Unit (OU) and name it `Applications` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
+#### Create KPIDashboard OU
+*   Create Applications Organizational Unit (OU) and name it `KPIDashboard` [following the steps in documentation](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html#create_ou).
 
 **Using CLI:**
 
 *   Use the correct organization ID for parameter `--parent-id` in the below command, create organizational unit.
 
 <code>
-aws organizations create-organizational-unit --region us-east-1 --profile billing --name Applications --parent-id <b><i>r-abcd</i></b>
+aws organizations create-organizational-unit --region us-east-1 --name KPIDashboard --parent-id <b><i>r-abcd</i></b>
 </code><br>
 
 
@@ -125,12 +106,12 @@ aws organizations create-organizational-unit --region us-east-1 --profile billin
     "OrganizationalUnit": {
         "Id": "ou-abcd-7example",
         "Arn": "arn:aws:organizations::123456789012:ou/o-got31bf9ah/ou-abcd-7example",
-        "Name": "Applications"
+        "Name": "KPIDashboard"
     }
 }
 ```
 
-> Save the value of Applications OU Id (e.g. ou-abcd-7example) returned by the above command or from the UI in ResourcesList.txt file.
+> Save the value of KPIDashboard OU Id (e.g. ou-abcd-7example) returned by the above command or from the UI in ResourcesList.txt file.
 
 
 ## Create required AWS accounts
@@ -141,7 +122,7 @@ aws organizations create-organizational-unit --region us-east-1 --profile billin
 >   
 > Check whether your mail server supports this capability by sending a test email. If it doesn’t support this capability then you need to create unique email address for each account that you are creating.
 
-### Create Security Account
+### Create KPIDashboard-Dev-Private Account
 1.  Navigate to Accounts tab of AWS Organizations console.
 
 2.  Click ‘Add Account’ followed by [‘Create Account’](http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html).
